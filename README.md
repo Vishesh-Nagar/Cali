@@ -94,4 +94,4 @@ Cali is a dynamic event calendar that allows users to manage their daily events 
 
 ## Deploy on Vercel
 
-The deployed version of this application is on [Cali](https://dacoid-digital.vercel.app/).
+The deployed version of this application is on [Cali](https://cali-rosy.vercel.app/).
