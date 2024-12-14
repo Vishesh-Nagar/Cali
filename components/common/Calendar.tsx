@@ -292,7 +292,9 @@ const Calendar = () => {
                     currentDay ? "w-9/12" : "w-full"
                 } h-full text-center p-8 pr-7`}
             >
-                <div className="mb-4">Dynamic Event Calendar Application</div>
+                <div className="mb-24 mt-4 text-5xl">
+                    Cali - Dynamic Calendar
+                </div>
 
                 <div className="flex justify-between items-center mb-4 gap-4">
                     <Button onClick={handlePrevMonth} variant={"default"}>
@@ -305,12 +307,6 @@ const Calendar = () => {
                         })}
                     </h2>
                     <div className="flex flex-row gap-4">
-                        <Button
-                            onClick={handleExportEvents}
-                            variant={"default"}
-                        >
-                            Export
-                        </Button>
                         <Button onClick={handleNextMonth} variant={"default"}>
                             Next
                         </Button>
@@ -337,7 +333,7 @@ const Calendar = () => {
                                     ? "bg-[#44c34e] text-white"
                                     : ""
                             }
-                            ${day ? "" : "bg-gray-100"} 
+                            ${day ? "" : "bg-gray-700"} 
                         `}
                         >
                             {day}
@@ -358,7 +354,7 @@ const Calendar = () => {
                                             <Pencil1Icon />
                                         </Button>
                                     </DialogTrigger>
-                                    <DialogContent className="bg-white">
+                                    <DialogContent className="bg-slate-700">
                                         <DialogHeader>
                                             <DialogTitle>
                                                 Add New Event for {day}{" "}
@@ -379,20 +375,21 @@ const Calendar = () => {
                                                         <Input
                                                             type="text"
                                                             name="name"
+                                                            placeholder="Title"
                                                             value={
                                                                 formData.name
                                                             }
                                                             onChange={
                                                                 handleInputChange
                                                             }
-                                                            className="bg-white p-2 w-full rounded-lg mt-1 outline-none"
+                                                            className="bg-white p-2 w-full rounded-lg mt-1 outline-none text-black"
                                                             required
                                                         />
                                                     </div>
 
                                                     <div className="flex flex-col">
                                                         <Label
-                                                            htmlFor="type"
+                                                            aria-placeholder="type"
                                                             className="mb-2"
                                                         >
                                                             Type
@@ -403,7 +400,7 @@ const Calendar = () => {
                                                                 setEventType
                                                             }
                                                         >
-                                                            <SelectTrigger className="w-full">
+                                                            <SelectTrigger className="w-full bg-white text-black">
                                                                 <SelectValue placeholder="Type" />
                                                             </SelectTrigger>
                                                             <SelectContent>
@@ -434,7 +431,7 @@ const Calendar = () => {
                                                                 onChange={
                                                                     handleInputChange
                                                                 }
-                                                                className="bg-white p-2 w-full rounded-lg mt-1 outline-none"
+                                                                className="bg-white p-2 w-full rounded-lg mt-1 outline-none text-black"
                                                                 required
                                                             />
                                                         </div>
@@ -451,7 +448,7 @@ const Calendar = () => {
                                                                 onChange={
                                                                     handleInputChange
                                                                 }
-                                                                className="bg-white p-2 w-full rounded-lg mt-1 outline-none"
+                                                                className="bg-white p-2 w-full rounded-lg mt-1 outline-none text-black"
                                                                 required
                                                             />
                                                         </div>
@@ -469,7 +466,7 @@ const Calendar = () => {
                                                             onChange={
                                                                 handleInputChange
                                                             }
-                                                            className="bg-white p-2 w-full rounded-lg mt-1 outline-none"
+                                                            className="bg-white p-2 w-full rounded-lg mt-1 outline-none text-black"
                                                             required
                                                         />
                                                     </div>
@@ -510,10 +507,10 @@ const Calendar = () => {
                     } h-full p-8 pl-1 flex flex-col items-start justify-center overflow-y-auto`}
                 >
                     {getEventsForDay(currentDay).length > 0 ? (
-                        <div className="bg-white w-full">
+                        <div className="bg-white-700 w-full">
                             <div>
-                                <div className="mb-4 flex flex-row justify-between">
-                                    <p>Events for this day;</p>
+                                <div className="mb-4 flex flex-row justify-between text-xl">
+                                    <p>Events scheduled for this day</p>
                                     <Button
                                         variant={"default"}
                                         onClick={() => setCurrentDay(null)}
@@ -525,7 +522,7 @@ const Calendar = () => {
                                 <div className="mb-4 px-1">
                                     <Input
                                         className="w-full h-10"
-                                        placeholder="Search Event for this day;"
+                                        placeholder="Search events"
                                         value={searchTerm}
                                         onChange={(e) =>
                                             setSearchTerm(
@@ -547,7 +544,7 @@ const Calendar = () => {
                                                     key={idx}
                                                     className={`cursor-pointer ${
                                                         event.type === "work" &&
-                                                        "bg-red-600 text-white"
+                                                        "bg-red-900 text-white"
                                                     } ${
                                                         event.type ===
                                                             "personal" &&
@@ -568,53 +565,6 @@ const Calendar = () => {
                                                     </CardHeader>
                                                     <CardContent className="flex flex-row gap-2">
                                                         <Dialog>
-                                                            <DialogTrigger>
-                                                                <Button className="h-6">
-                                                                    Delete
-                                                                </Button>
-                                                            </DialogTrigger>
-                                                            <DialogContent className="bg-white">
-                                                                <DialogHeader>
-                                                                    <DialogTitle>
-                                                                        Are you
-                                                                        absolutely
-                                                                        sure?
-                                                                    </DialogTitle>
-                                                                    <DialogDescription className="flex flex-col gap-5">
-                                                                        <span>
-                                                                            This
-                                                                            action
-                                                                            cannot
-                                                                            be
-                                                                            undone.
-                                                                            This
-                                                                            will
-                                                                            permanently
-                                                                            delete
-                                                                            your
-                                                                            event
-                                                                            from
-                                                                            the
-                                                                            servers.
-                                                                        </span>
-                                                                        <Button
-                                                                            variant={
-                                                                                "destructive"
-                                                                            }
-                                                                            onClick={() =>
-                                                                                handleDeleteEvent(
-                                                                                    event
-                                                                                )
-                                                                            }
-                                                                        >
-                                                                            Delete
-                                                                        </Button>
-                                                                    </DialogDescription>
-                                                                </DialogHeader>
-                                                            </DialogContent>
-                                                        </Dialog>
-
-                                                        <Dialog>
                                                             <DialogTrigger
                                                                 asChild
                                                             >
@@ -629,9 +579,9 @@ const Calendar = () => {
                                                                     Edit
                                                                 </Button>
                                                             </DialogTrigger>
-                                                            <DialogContent className="bg-white">
+                                                            <DialogContent className="bg-gray-800">
                                                                 <DialogHeader>
-                                                                    <DialogTitle>
+                                                                    <DialogTitle className="text-3xl">
                                                                         Edit
                                                                         Event
                                                                     </DialogTitle>
@@ -642,8 +592,9 @@ const Calendar = () => {
                                                                                     onSubmit={
                                                                                         handleUpdateEvent
                                                                                     }
-                                                                                    className="flex flex-col gap-2"
+                                                                                    className="flex flex-col gap-2 text-xl"
                                                                                 >
+                                                                                    Title
                                                                                     <Input
                                                                                         type="text"
                                                                                         value={
@@ -664,6 +615,7 @@ const Calendar = () => {
                                                                                         placeholder="Event Title"
                                                                                         required
                                                                                     />
+                                                                                    Start
                                                                                     <Input
                                                                                         type="time"
                                                                                         value={
@@ -684,6 +636,7 @@ const Calendar = () => {
                                                                                         }
                                                                                         required
                                                                                     />
+                                                                                    End
                                                                                     <Input
                                                                                         type="time"
                                                                                         value={
@@ -704,6 +657,7 @@ const Calendar = () => {
                                                                                         }
                                                                                         required
                                                                                     />
+                                                                                    Description
                                                                                     <Textarea
                                                                                         value={
                                                                                             editingEvent.description
@@ -751,6 +705,44 @@ const Calendar = () => {
                                                                 </DialogHeader>
                                                             </DialogContent>
                                                         </Dialog>
+
+                                                        <Dialog>
+                                                            <DialogTrigger>
+                                                                <Button className="h-6">
+                                                                    Delete
+                                                                </Button>
+                                                            </DialogTrigger>
+                                                            <DialogContent className="bg-gray-800">
+                                                                <DialogHeader>
+                                                                    <DialogTitle className="text-3xl">
+                                                                        Are you
+                                                                        absolutely
+                                                                        sure?
+                                                                    </DialogTitle>
+                                                                    <DialogDescription className="flex flex-col gap-5 text-xl">
+                                                                        <span>
+                                                                            This
+                                                                            action
+                                                                            cannot
+                                                                            be
+                                                                            undone.
+                                                                        </span>
+                                                                        <Button
+                                                                            variant={
+                                                                                "destructive"
+                                                                            }
+                                                                            onClick={() =>
+                                                                                handleDeleteEvent(
+                                                                                    event
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Delete
+                                                                        </Button>
+                                                                    </DialogDescription>
+                                                                </DialogHeader>
+                                                            </DialogContent>
+                                                        </Dialog>
                                                     </CardContent>
                                                 </Card>
                                             ))}
@@ -760,21 +752,21 @@ const Calendar = () => {
                         </div>
                     ) : (
                         <div className="flex w-full h-full flex-col">
-                            <div className="w-full mb-4 flex flex-row justify-between">
-                                <p> No Events Scheduled;</p>
+                            <div className="w-full mb-4 flex flex-row justify-between text-xl">
+                                <p> No Events Scheduled</p>
                                 <Button
                                     variant={"default"}
                                     onClick={() => setCurrentDay(null)}
-                                    className="mb-4 h-6"
+                                    className="mb-4 h-8"
                                 >
                                     Close
                                 </Button>
                             </div>
                             <Card className="cursor-pointer">
                                 <CardHeader>
-                                    <CardTitle>Oops</CardTitle>
+                                    <CardTitle>Sorry</CardTitle>
                                     <CardDescription>
-                                        Nothing Here
+                                        No Events scheduled
                                     </CardDescription>
                                 </CardHeader>
                             </Card>
