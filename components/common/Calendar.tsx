@@ -223,10 +223,11 @@ const Calendar = () => {
             const updatedEvents = events.map((event) =>
                 event.name === editingEvent.name &&
                 event.day === editingEvent.day
-                    ? editingEvent
+                    ? { ...formData }
                     : event
             );
             localStorage.setItem("events", JSON.stringify(updatedEvents));
+            setEvents(updatedEvents);
             setEditingEvent(null);
             setIsEditing(false);
             setFormData({
@@ -237,13 +238,13 @@ const Calendar = () => {
                 day: "",
                 type: "",
             });
-            loadEventsFromStorage();
             toast({
-                title: `Updated: ${editingEvent.name}`,
-                description: `Event "${editingEvent.name}" has been updated.`,
+                title: `Updated: ${formData.name}`,
+                description: `Event "${formData.name}" has been updated.`,
             });
         }
     };
+
     const daysOfWeek = [
         "Sunday",
         "Monday",
@@ -262,55 +263,27 @@ const Calendar = () => {
             today.getFullYear() === currentDate.getFullYear()
         );
     };
-    const exportEventsForMonth = (year: number, month: number) => {
-        const filteredEvents = events.filter((event) => {
-            const eventDate = new Date(event.day);
-            return (
-                eventDate.getFullYear() === year &&
-                eventDate.getMonth() === month
-            );
-        });
-
-        const jsonData = JSON.stringify(filteredEvents, null, 2);
-        const blob = new Blob([jsonData], { type: "application/json" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `events_${year}-${month + 1}.json`;
-        link.click();
-    };
-
-    const handleExportEvents = () => {
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        exportEventsForMonth(year, month);
-    };
 
     return (
-        <div className="w-full h-full flex flex-row">
-            <div
-                className={`${
-                    currentDay ? "w-9/12" : "w-full"
-                } h-full text-center p-8 pr-7`}
-            >
-                <div className="mb-24 mt-4 text-5xl">
-                    Cali - Dynamic Calendar
+        <div className="w-full h-full flex flex-col">
+            <div className="text-center p-8">
+                <div className="mb-2 mt-4 text-5xl font-bold">Cali</div>
+                <div className="mb-24 mt-4 text-3xl font-bold">
+                    Your Dynamic Calendar
                 </div>
-
                 <div className="flex justify-between items-center mb-4 gap-4">
                     <Button onClick={handlePrevMonth} variant={"default"}>
                         Previous
                     </Button>
-                    <h2 className="text-xl font-bold">
+                    <h2 className="text-3xl">
                         {currentDate.toLocaleDateString("default", {
                             month: "long",
                             year: "numeric",
                         })}
                     </h2>
-                    <div className="flex flex-row gap-4">
-                        <Button onClick={handleNextMonth} variant={"default"}>
-                            Next
-                        </Button>
-                    </div>
+                    <Button onClick={handleNextMonth} variant={"default"}>
+                        Next
+                    </Button>
                 </div>
                 <div className="grid grid-cols-7 gap-2">
                     {daysOfWeek.map((day, index) => (
@@ -318,26 +291,24 @@ const Calendar = () => {
                             {day}
                         </div>
                     ))}
-
                     {calendarDays.map((day, index) => (
                         <div
                             key={index}
-                            className={`h-24 p-2 relative flex items-center justify-center border rounded text-2xl text-center cursor-pointer parentCard 
-                            ${
-                                day && isToday(day)
-                                    ? "bg-[#1a1a1a] text-white"
-                                    : ""
-                            } 
-                            ${
-                                currentDay === day
-                                    ? "bg-[#44c34e] text-white"
-                                    : ""
-                            }
-                            ${day ? "" : "bg-gray-700"} 
-                        `}
+                            className={`h-24 p-2 relative flex items-center justify-center border rounded text-2xl text-center cursor-pointer 
+                                ${
+                                    day && isToday(day)
+                                        ? "bg-[#1a1a1a] text-white"
+                                        : ""
+                                }
+                                ${
+                                    currentDay === day
+                                        ? "bg-[#44c34e] text-white"
+                                        : ""
+                                }
+                                ${day ? "" : "bg-gray-700"}
+                            `}
                         >
                             {day}
-
                             {day && (
                                 <Dialog
                                     open={selectedDay === day}
@@ -485,11 +456,10 @@ const Calendar = () => {
                                     </DialogContent>
                                 </Dialog>
                             )}
-
                             {day && (
                                 <Button
                                     variant={"outline"}
-                                    className="absolute h-6 bottom-2 left-2 border border-slate-300 rounded px-2 childCard"
+                                    className="absolute h-6 bottom-2 left-2 border border-slate-300 rounded px-2"
                                     onClick={() => setCurrentDay(day)}
                                 >
                                     {getEventsForDay(day).length} events
@@ -499,13 +469,8 @@ const Calendar = () => {
                     ))}
                 </div>
             </div>
-
             {currentDay && (
-                <div
-                    className={`${
-                        currentDay ? "w-3/12" : "w-0"
-                    } h-full p-8 pl-1 flex flex-col items-start justify-center overflow-y-auto`}
-                >
+                <div className="p-8 flex flex-col items-start justify-center overflow-y-auto">
                     {getEventsForDay(currentDay).length > 0 ? (
                         <div className="bg-white-700 w-full">
                             <div>
@@ -594,102 +559,71 @@ const Calendar = () => {
                                                                                     }
                                                                                     className="flex flex-col gap-2 text-xl"
                                                                                 >
-                                                                                    Title
+                                                                                    <Label htmlFor="name">
+                                                                                        Title
+                                                                                    </Label>
                                                                                     <Input
                                                                                         type="text"
+                                                                                        name="name"
                                                                                         value={
-                                                                                            editingEvent.name
+                                                                                            formData.name
                                                                                         }
-                                                                                        onChange={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            setEditingEvent(
-                                                                                                {
-                                                                                                    ...editingEvent,
-                                                                                                    name: e
-                                                                                                        .target
-                                                                                                        .value,
-                                                                                                }
-                                                                                            )
+                                                                                        onChange={
+                                                                                            handleInputChange
                                                                                         }
                                                                                         placeholder="Event Title"
                                                                                         required
                                                                                     />
-                                                                                    Start
+                                                                                    <Label htmlFor="startTime">
+                                                                                        Start
+                                                                                        Time
+                                                                                    </Label>
                                                                                     <Input
                                                                                         type="time"
+                                                                                        name="startTime"
                                                                                         value={
-                                                                                            editingEvent.startTime
+                                                                                            formData.startTime
                                                                                         }
-                                                                                        onChange={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            setEditingEvent(
-                                                                                                {
-                                                                                                    ...editingEvent,
-                                                                                                    startTime:
-                                                                                                        e
-                                                                                                            .target
-                                                                                                            .value,
-                                                                                                }
-                                                                                            )
+                                                                                        onChange={
+                                                                                            handleInputChange
                                                                                         }
                                                                                         required
                                                                                     />
-                                                                                    End
+                                                                                    <Label htmlFor="endTime">
+                                                                                        End
+                                                                                        Time
+                                                                                    </Label>
                                                                                     <Input
                                                                                         type="time"
+                                                                                        name="endTime"
                                                                                         value={
-                                                                                            editingEvent.endTime
+                                                                                            formData.endTime
                                                                                         }
-                                                                                        onChange={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            setEditingEvent(
-                                                                                                {
-                                                                                                    ...editingEvent,
-                                                                                                    endTime:
-                                                                                                        e
-                                                                                                            .target
-                                                                                                            .value,
-                                                                                                }
-                                                                                            )
+                                                                                        onChange={
+                                                                                            handleInputChange
                                                                                         }
                                                                                         required
                                                                                     />
-                                                                                    Description
+                                                                                    <Label htmlFor="description">
+                                                                                        Description
+                                                                                    </Label>
                                                                                     <Textarea
+                                                                                        name="description"
                                                                                         value={
-                                                                                            editingEvent.description
+                                                                                            formData.description
                                                                                         }
-                                                                                        onChange={(
-                                                                                            e
-                                                                                        ) =>
-                                                                                            setEditingEvent(
-                                                                                                {
-                                                                                                    ...editingEvent,
-                                                                                                    description:
-                                                                                                        e
-                                                                                                            .target
-                                                                                                            .value,
-                                                                                                }
-                                                                                            )
+                                                                                        onChange={
+                                                                                            handleInputChange
                                                                                         }
                                                                                         placeholder="Description"
                                                                                     />
                                                                                     <Button
-                                                                                        variant={
-                                                                                            "default"
-                                                                                        }
                                                                                         type="submit"
                                                                                         className="mt-4"
                                                                                     >
                                                                                         Update
                                                                                     </Button>
                                                                                     <Button
-                                                                                        variant={
-                                                                                            "default"
-                                                                                        }
                                                                                         type="button"
                                                                                         onClick={() =>
                                                                                             setIsEditing(
@@ -753,7 +687,7 @@ const Calendar = () => {
                     ) : (
                         <div className="flex w-full h-full flex-col">
                             <div className="w-full mb-4 flex flex-row justify-between text-xl">
-                                <p> No Events Scheduled</p>
+                                <p>No Events Scheduled</p>
                                 <Button
                                     variant={"default"}
                                     onClick={() => setCurrentDay(null)}
